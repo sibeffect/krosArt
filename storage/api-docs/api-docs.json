@@ -1,0 +1,908 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Krosart API",
+        "description": "Documentation de l'API Krosart",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/login": {
+            "get": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Formulaire de connexion",
+                "operationId": "loginForm",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML de connexion"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Connexion",
+                "operationId": "loginStore",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "remember": {
+                                        "type": "boolean",
+                                        "default": false
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redirection après connexion (souvent vers /dashboard)"
+                    },
+                    "422": {
+                        "description": "Identifiants invalides"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Déconnexion",
+                "operationId": "logout",
+                "responses": {
+                    "302": {
+                        "description": "Redirection après déconnexion"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "get": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Formulaire d'inscription",
+                "operationId": "registerForm",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML d'inscription"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Inscription",
+                "operationId": "registerStore",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redirection après inscription"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "get": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Formulaire mot de passe oublié",
+                "operationId": "forgotPasswordForm",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Demande de lien de réinitialisation",
+                "operationId": "forgotPasswordStore",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "required": [
+                                    "email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "302": {
+                        "description": "Lien de réinitialisation envoyé"
+                    }
+                }
+            }
+        },
+        "/reset-password/{token}": {
+            "get": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Formulaire de nouveau mot de passe",
+                "operationId": "resetPasswordForm",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Page HTML"
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "post": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Enregistrer le nouveau mot de passe",
+                "operationId": "resetPasswordStore",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "required": [
+                                    "token",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "302": {
+                        "description": "Mot de passe mis à jour"
+                    }
+                }
+            }
+        },
+        "/email/verify": {
+            "get": {
+                "tags": [
+                    "Vérification e-mail"
+                ],
+                "summary": "Invitation à vérifier l'e-mail",
+                "operationId": "emailVerifyNotice",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/email/verify/{id}/{hash}": {
+            "get": {
+                "tags": [
+                    "Vérification e-mail"
+                ],
+                "summary": "Vérifier l'adresse e-mail (lien signé)",
+                "operationId": "emailVerify",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "E-mail vérifié"
+                    }
+                }
+            }
+        },
+        "/email/verification-notification": {
+            "post": {
+                "tags": [
+                    "Vérification e-mail"
+                ],
+                "summary": "Renvoyer l'e-mail de vérification",
+                "operationId": "emailVerificationNotification",
+                "responses": {
+                    "302": {
+                        "description": "E-mail de vérification renvoyé"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/two-factor-challenge": {
+            "get": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Formulaire de défi 2FA (après connexion)",
+                "operationId": "twoFactorChallengeForm",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Valider le code 2FA à la connexion",
+                "operationId": "twoFactorChallengeStore",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "description": "Code TOTP"
+                                    },
+                                    "recovery_code": {
+                                        "type": "string",
+                                        "description": "Code de secours"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "302": {
+                        "description": "Connexion finalisée"
+                    }
+                }
+            }
+        },
+        "/user/confirm-password": {
+            "get": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Confirmer le mot de passe (zone sensible)",
+                "operationId": "confirmPasswordForm",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Soumettre la confirmation de mot de passe",
+                "operationId": "confirmPasswordStore",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "required": [
+                                    "password"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "302": {
+                        "description": "Mot de passe confirmé"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/confirmed-password-status": {
+            "get": {
+                "tags": [
+                    "Mot de passe"
+                ],
+                "summary": "Statut de confirmation de mot de passe",
+                "operationId": "confirmedPasswordStatus",
+                "responses": {
+                    "200": {
+                        "description": "JSON { confirmed: boolean }"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/two-factor-authentication": {
+            "post": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Activer l'authentification à deux facteurs",
+                "operationId": "twoFactorEnable",
+                "responses": {
+                    "200": {
+                        "description": "2FA activée (configuration en cours)"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Désactiver l'authentification à deux facteurs",
+                "operationId": "twoFactorDisable",
+                "responses": {
+                    "200": {
+                        "description": "2FA désactivée"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/two-factor-qr-code": {
+            "get": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "QR code pour l'application d'authentification",
+                "operationId": "twoFactorQrCode",
+                "responses": {
+                    "200": {
+                        "description": "SVG ou JSON du QR code"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/two-factor-secret-key": {
+            "get": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Clé secrète TOTP",
+                "operationId": "twoFactorSecretKey",
+                "responses": {
+                    "200": {
+                        "description": "Clé secrète"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/two-factor-recovery-codes": {
+            "get": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Lister les codes de secours",
+                "operationId": "twoFactorRecoveryCodes",
+                "responses": {
+                    "200": {
+                        "description": "Liste des codes"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Régénérer les codes de secours",
+                "operationId": "twoFactorRegenerateRecoveryCodes",
+                "responses": {
+                    "200": {
+                        "description": "Nouveaux codes"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/confirmed-two-factor-authentication": {
+            "post": {
+                "tags": [
+                    "Two-factor"
+                ],
+                "summary": "Confirmer l'activation 2FA avec un code TOTP",
+                "operationId": "twoFactorConfirm",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "2FA confirmée"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/passkeys/login/options": {
+            "get": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Options WebAuthn pour connexion par passkey",
+                "operationId": "passkeyLoginOptions",
+                "responses": {
+                    "200": {
+                        "description": "JSON PublicKeyCredentialRequestOptions"
+                    }
+                }
+            }
+        },
+        "/passkeys/login": {
+            "post": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Connexion via passkey",
+                "operationId": "passkeyLogin",
+                "responses": {
+                    "302": {
+                        "description": "Connexion réussie"
+                    }
+                }
+            }
+        },
+        "/passkeys/confirm/options": {
+            "get": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Options WebAuthn pour confirmation par passkey",
+                "operationId": "passkeyConfirmOptions",
+                "responses": {
+                    "200": {
+                        "description": "JSON options"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/passkeys/confirm": {
+            "post": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Confirmer une action sensible via passkey",
+                "operationId": "passkeyConfirm",
+                "responses": {
+                    "200": {
+                        "description": "Action confirmée"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/passkeys/options": {
+            "get": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Options d'enregistrement d'une passkey",
+                "operationId": "passkeyRegistrationOptions",
+                "responses": {
+                    "200": {
+                        "description": "JSON PublicKeyCredentialCreationOptions"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/passkeys": {
+            "post": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Enregistrer une nouvelle passkey",
+                "operationId": "passkeyStore",
+                "responses": {
+                    "201": {
+                        "description": "Passkey enregistrée"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/passkeys/{passkey}": {
+            "delete": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Supprimer une passkey",
+                "operationId": "passkeyDestroy",
+                "parameters": [
+                    {
+                        "name": "passkey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Passkey supprimée"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/.well-known/passkey-endpoints": {
+            "get": {
+                "tags": [
+                    "Passkeys"
+                ],
+                "summary": "Points de terminaison passkey (well-known)",
+                "operationId": "passkeyWellKnown",
+                "responses": {
+                    "200": {
+                        "description": "JSON enroll / manage URLs"
+                    }
+                }
+            }
+        },
+        "/dashboard": {
+            "get": {
+                "tags": [
+                    "Tableau de bord"
+                ],
+                "summary": "Tableau de bord",
+                "description": "Requiert authentification et e-mail vérifié.",
+                "operationId": "dashboard",
+                "responses": {
+                    "200": {
+                        "description": "Page HTML du tableau de bord"
+                    },
+                    "302": {
+                        "description": "Redirection vers login si non connecté"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/settings": {
+            "get": {
+                "tags": [
+                    "Paramètres"
+                ],
+                "summary": "Redirection vers les paramètres",
+                "description": "Redirige vers /settings/profile.",
+                "operationId": "settingsRedirect",
+                "responses": {
+                    "302": {
+                        "description": "Redirection vers le profil"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/settings/profile": {
+            "get": {
+                "tags": [
+                    "Paramètres"
+                ],
+                "summary": "Paramètres — profil",
+                "operationId": "settingsProfile",
+                "responses": {
+                    "200": {
+                        "description": "Page Livewire profil"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/settings/appearance": {
+            "get": {
+                "tags": [
+                    "Paramètres"
+                ],
+                "summary": "Paramètres — apparence",
+                "description": "Requiert e-mail vérifié.",
+                "operationId": "settingsAppearance",
+                "responses": {
+                    "200": {
+                        "description": "Page Livewire apparence"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/settings/security": {
+            "get": {
+                "tags": [
+                    "Paramètres"
+                ],
+                "summary": "Paramètres — sécurité (2FA, passkeys, mot de passe)",
+                "description": "Requiert e-mail vérifié et confirmation de mot de passe récente pour certaines actions.",
+                "operationId": "settingsSecurity",
+                "responses": {
+                    "200": {
+                        "description": "Page Livewire sécurité"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/health": {
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "Health check",
+                "operationId": "5bec09d334412ddb6b488157cd321f6c",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "cookieAuth": {
+                "type": "apiKey",
+                "description": "Session Laravel (utilisateur connecté via Fortify)",
+                "name": "laravel_session",
+                "in": "cookie"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentification",
+            "description": "Connexion, inscription et déconnexion"
+        },
+        {
+            "name": "Mot de passe",
+            "description": "Réinitialisation et confirmation"
+        },
+        {
+            "name": "Vérification e-mail",
+            "description": "Vérification d'adresse e-mail"
+        },
+        {
+            "name": "Two-factor",
+            "description": "Authentification à deux facteurs"
+        },
+        {
+            "name": "Passkeys",
+            "description": "WebAuthn / passkeys"
+        },
+        {
+            "name": "Tableau de bord",
+            "description": "Espace connecté"
+        },
+        {
+            "name": "Paramètres",
+            "description": "Pages Livewire de paramètres utilisateur"
+        },
+        {
+            "name": "System",
+            "description": "System"
+        }
+    ]
+}
